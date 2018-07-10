@@ -11,7 +11,7 @@ body {
 	flex-direction: column;
 	border: 2px solid;
 	border-radius: 5px;
-	box-shadow: 0 5px 10px #aaa;
+	box-shadow: 5px 5px 10px #aaa;
 	padding: 20px;
 	background-color: #66c9c9;
 }
@@ -41,4 +41,10 @@ h4 {
 
 .comment-footer-delete {
 	color: #ccf4f4;
+}
+
+button {
+	padding: 10px 20px;
+	max-width: 200px;
+	margin: 0 auto;
 }

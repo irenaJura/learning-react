@@ -1,22 +1,40 @@
 'use strict';
 
 class CommentBox extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      showComments: false
+    };
+  }
+
   render() {
     const comments = this._getComments();
-    
+
+    let commentNodes;
+    if (this.state.showComments) {
+      commentNodes = <div className="comment-list">{comments}</div>
+    }
+
+    let buttonText = 'Show comments';
+    if (this.state.showComments) {
+      buttonText = 'Hide comments';
+    }
+
     return(
       <div className="comment-box">
-        <h3>Comments</h3>
+        <h3>Comment Box</h3>
         <h4 className="comment-count">{this._getCommentsTitle(comments.length)}</h4>
+        <button onClick={this._handleClick.bind(this)}>{buttonText}</button>
         <div className="comment-list">
-          {comments} 
+          {commentNodes} 
         </div>
       </div>
     );
   }
 
   _getComments() {
-        const commentList = [
+      const commentList = [
         { id: 1, author: 'Morgan McCircuit', body: 'Great picture!' },
         { id: 2, author: 'Bending Bender', body:'Excellent stuff' }
       ];
@@ -37,6 +55,13 @@ class CommentBox extends React.Component {
       return `${commentCount} comments`;
     }
   }
+
+  _handleClick() {
+    this.setState({
+      showComments: !this.state.showComments
+    });
+  }
+
 
   }
 
