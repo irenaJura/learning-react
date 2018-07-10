@@ -1,0 +1,44 @@
+body {
+	color: #fef;
+	font-family: Arial, sans-serif;
+}
+
+.comment-box {
+	max-width: 500px;
+	height: auto;
+	margin: 20px auto;
+	display: flex;
+	flex-direction: column;
+	border: 2px solid;
+	border-radius: 5px;
+	box-shadow: 0 5px 10px #aaa;
+	padding: 20px;
+	background-color: #66c9c9;
+}
+
+.comment {
+	margin: 20px 0;
+}
+
+.comment-header {
+    border-bottom: 1px solid;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+
+.comment-footer {
+	display: inline;
+	position: relative;
+	top: -80px;
+	left: 75%;
+}
+
+h4 {
+	text-transform: uppercase;
+	color: #ccf4f4;
+}
+
+.comment-footer-delete {
+	color: #ccf4f4;
+}

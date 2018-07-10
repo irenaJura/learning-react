@@ -36,8 +36,8 @@ var CommentBox = function (_React$Component) {
         React.createElement(
           "div",
           { className: "comment-list" },
-          React.createElement(Comment, null),
-          React.createElement(Comment, null)
+          React.createElement(Comment, { author: "Morgan McCircuit", body: "Great picture!" }),
+          React.createElement(Comment, { author: "Bending Bender", body: "Excellent stuff!" })
         )
       );
     }
@@ -64,12 +64,12 @@ var Comment = function (_React$Component2) {
         React.createElement(
           "p",
           { className: "comment-header" },
-          "Anne Droid"
+          this.props.author
         ),
         React.createElement(
           "p",
           { className: "comment-body" },
-          "I want to learn React"
+          this.props.body
         ),
         React.createElement(
           "div",
