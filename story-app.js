@@ -33,8 +33,7 @@ var CommentBox = function (_React$Component) {
         React.createElement(
           "h4",
           { className: "comment-count" },
-          comments.length,
-          " comments"
+          this._getCommentsTitle(comments.length)
         ),
         React.createElement(
           "div",
@@ -49,8 +48,19 @@ var CommentBox = function (_React$Component) {
       var commentList = [{ id: 1, author: 'Morgan McCircuit', body: 'Great picture!' }, { id: 2, author: 'Bending Bender', body: 'Excellent stuff' }];
 
       return commentList.map(function (comment) {
-        return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.body });
+        return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
       });
+    }
+  }, {
+    key: "_getCommentsTitle",
+    value: function _getCommentsTitle(commentCount) {
+      if (commentCount === 0) {
+        return 'No comments yet';
+      } else if (commentCount === 1) {
+        return '1 comment';
+      } else {
+        return commentCount + " comments";
+      }
     }
   }]);
 
