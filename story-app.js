@@ -20,6 +20,8 @@ var CommentBox = function (_React$Component) {
   _createClass(CommentBox, [{
     key: "render",
     value: function render() {
+      var comments = this._getComments();
+
       return React.createElement(
         "div",
         { className: "comment-box" },
@@ -31,15 +33,24 @@ var CommentBox = function (_React$Component) {
         React.createElement(
           "h4",
           { className: "comment-count" },
-          "2 comments"
+          comments.length,
+          " comments"
         ),
         React.createElement(
           "div",
           { className: "comment-list" },
-          React.createElement(Comment, { author: "Morgan McCircuit", body: "Great picture!" }),
-          React.createElement(Comment, { author: "Bending Bender", body: "Excellent stuff!" })
+          comments
         )
       );
+    }
+  }, {
+    key: "_getComments",
+    value: function _getComments() {
+      var commentList = [{ id: 1, author: 'Morgan McCircuit', body: 'Great picture!' }, { id: 2, author: 'Bending Bender', body: 'Excellent stuff' }];
+
+      return commentList.map(function (comment) {
+        return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.body });
+      });
     }
   }]);
 
