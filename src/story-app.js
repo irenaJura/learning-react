@@ -1,10 +1,43 @@
 'use strict';
 
+class CommentForm extends React.Component {
+  render() {
+    return(
+        <form className="comment-form" onSubmit={this._handleSubmit.bind(this)}>
+          <label>Join the discussion</label>
+          <div className="comment-form-fields">
+            <input placeholder="Name:" ref={(input) => this._author = input}/>
+            <textarea placeholder="Comment:" ref={(textarea) => this._body = textarea}></textarea>
+          </div>
+          <div className="comment-form-actions">
+            <button type="submit" className="new-comment">
+              Post comment
+            </button>
+          </div>
+        </form>
+      );
+  }
+
+  _handleSubmit(event) {
+    event.preventDefault();
+
+    let author = this._author;
+    let body = this._body;
+
+    this.props.addComment(author.value, body.value);
+  }
+
+}
+
 class CommentBox extends React.Component {
   constructor() {
     super();
     this.state = {
-      showComments: false
+      showComments: false,
+      comments: [
+        { id: 1, author: 'Morgan McCircuit', body: 'Great picture!' },
+        { id: 2, author: 'Bending Bender', body:'Excellent stuff' }
+      ]
     };
   }
 
@@ -23,9 +56,10 @@ class CommentBox extends React.Component {
 
     return(
       <div className="comment-box">
+        <CommentForm addComment={this._addComment.bind(this)} />
         <h3>Comment Box</h3>
         <h4 className="comment-count">{this._getCommentsTitle(comments.length)}</h4>
-        <button onClick={this._handleClick.bind(this)}>{buttonText}</button>
+        <button className="delete" onClick={this._handleClick.bind(this)}>{buttonText}</button>
         <div className="comment-list">
           {commentNodes} 
         </div>
@@ -34,12 +68,8 @@ class CommentBox extends React.Component {
   }
 
   _getComments() {
-      const commentList = [
-        { id: 1, author: 'Morgan McCircuit', body: 'Great picture!' },
-        { id: 2, author: 'Bending Bender', body:'Excellent stuff' }
-      ];
 
-      return commentList.map((comment) => {
+      return this.state.comments.map((comment) => {
         return (
           <Comment author={comment.author} body={comment.body} key={comment.id} />
           );
@@ -60,6 +90,15 @@ class CommentBox extends React.Component {
     this.setState({
       showComments: !this.state.showComments
     });
+  }
+
+  _addComment(author, body) {
+    const comment = {
+      id: this.state.comments.length + 1,
+      author,
+      body
+    };
+    this.setState({ comments: this.state.comments.concat({comment}) });
   }
 
 

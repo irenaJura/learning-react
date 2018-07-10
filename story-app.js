@@ -8,30 +8,89 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CommentBox = function (_React$Component) {
-  _inherits(CommentBox, _React$Component);
+var CommentForm = function (_React$Component) {
+  _inherits(CommentForm, _React$Component);
+
+  function CommentForm() {
+    _classCallCheck(this, CommentForm);
+
+    return _possibleConstructorReturn(this, (CommentForm.__proto__ || Object.getPrototypeOf(CommentForm)).apply(this, arguments));
+  }
+
+  _createClass(CommentForm, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      return React.createElement(
+        "form",
+        { className: "comment-form", onSubmit: this._handleSubmit.bind(this) },
+        React.createElement(
+          "label",
+          null,
+          "Join the discussion"
+        ),
+        React.createElement(
+          "div",
+          { className: "comment-form-fields" },
+          React.createElement("input", { placeholder: "Name:", ref: function ref(input) {
+              return _this2._author = input;
+            } }),
+          React.createElement("textarea", { placeholder: "Comment:", ref: function ref(textarea) {
+              return _this2._body = textarea;
+            } })
+        ),
+        React.createElement(
+          "div",
+          { className: "comment-form-actions" },
+          React.createElement(
+            "button",
+            { type: "submit", className: "new-comment" },
+            "Post comment"
+          )
+        )
+      );
+    }
+  }, {
+    key: "_handleSubmit",
+    value: function _handleSubmit(event) {
+      event.preventDefault();
+
+      var author = this._author;
+      var body = this._body;
+
+      this.props.addComment(author.value, body.value);
+    }
+  }]);
+
+  return CommentForm;
+}(React.Component);
+
+var CommentBox = function (_React$Component2) {
+  _inherits(CommentBox, _React$Component2);
 
   function CommentBox() {
     _classCallCheck(this, CommentBox);
 
-    var _this = _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).call(this));
+    var _this3 = _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).call(this));
 
-    _this.state = {
-      showComments: false
+    _this3.state = {
+      showComments: false,
+      comments: [{ id: 1, author: 'Morgan McCircuit', body: 'Great picture!' }, { id: 2, author: 'Bending Bender', body: 'Excellent stuff' }]
     };
-    return _this;
+    return _this3;
   }
 
   _createClass(CommentBox, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       var comments = this._getComments();
 
       var commentNodes = void 0;
       if (this.state.showComments) {
         commentNodes = React.createElement(
-          'div',
-          { className: 'comment-list' },
+          "div",
+          { className: "comment-list" },
           comments
         );
       }
@@ -42,64 +101,74 @@ var CommentBox = function (_React$Component) {
       }
 
       return React.createElement(
-        'div',
-        { className: 'comment-box' },
+        "div",
+        { className: "comment-box" },
+        React.createElement(CommentForm, { addComment: this._addComment.bind(this) }),
         React.createElement(
-          'h3',
+          "h3",
           null,
-          'Comment Box'
+          "Comment Box"
         ),
         React.createElement(
-          'h4',
-          { className: 'comment-count' },
+          "h4",
+          { className: "comment-count" },
           this._getCommentsTitle(comments.length)
         ),
         React.createElement(
-          'button',
-          { onClick: this._handleClick.bind(this) },
+          "button",
+          { className: "delete", onClick: this._handleClick.bind(this) },
           buttonText
         ),
         React.createElement(
-          'div',
-          { className: 'comment-list' },
+          "div",
+          { className: "comment-list" },
           commentNodes
         )
       );
     }
   }, {
-    key: '_getComments',
+    key: "_getComments",
     value: function _getComments() {
-      var commentList = [{ id: 1, author: 'Morgan McCircuit', body: 'Great picture!' }, { id: 2, author: 'Bending Bender', body: 'Excellent stuff' }];
 
-      return commentList.map(function (comment) {
+      return this.state.comments.map(function (comment) {
         return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
       });
     }
   }, {
-    key: '_getCommentsTitle',
+    key: "_getCommentsTitle",
     value: function _getCommentsTitle(commentCount) {
       if (commentCount === 0) {
         return 'No comments yet';
       } else if (commentCount === 1) {
         return '1 comment';
       } else {
-        return commentCount + ' comments';
+        return commentCount + " comments";
       }
     }
   }, {
-    key: '_handleClick',
+    key: "_handleClick",
     value: function _handleClick() {
       this.setState({
         showComments: !this.state.showComments
       });
+    }
+  }, {
+    key: "_addComment",
+    value: function _addComment(author, body) {
+      var comment = {
+        id: this.state.comments.length + 1,
+        author: author,
+        body: body
+      };
+      this.setState({ comments: this.state.comments.concat({ comment: comment }) });
     }
   }]);
 
   return CommentBox;
 }(React.Component);
 
-var Comment = function (_React$Component2) {
-  _inherits(Comment, _React$Component2);
+var Comment = function (_React$Component3) {
+  _inherits(Comment, _React$Component3);
 
   function Comment() {
     _classCallCheck(this, Comment);
@@ -108,28 +177,28 @@ var Comment = function (_React$Component2) {
   }
 
   _createClass(Comment, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       return React.createElement(
-        'div',
-        { className: 'comment' },
+        "div",
+        { className: "comment" },
         React.createElement(
-          'p',
-          { className: 'comment-header' },
+          "p",
+          { className: "comment-header" },
           this.props.author
         ),
         React.createElement(
-          'p',
-          { className: 'comment-body' },
+          "p",
+          { className: "comment-body" },
           this.props.body
         ),
         React.createElement(
-          'div',
-          { className: 'comment-footer' },
+          "div",
+          { className: "comment-footer" },
           React.createElement(
-            'a',
-            { href: '#', className: 'comment-footer-delete' },
-            'Delete comment'
+            "a",
+            { href: "#", className: "comment-footer-delete" },
+            "Delete comment"
           )
         )
       );
@@ -139,8 +208,8 @@ var Comment = function (_React$Component2) {
   return Comment;
 }(React.Component);
 
-var StoryBox = function (_React$Component3) {
-  _inherits(StoryBox, _React$Component3);
+var StoryBox = function (_React$Component4) {
+  _inherits(StoryBox, _React$Component4);
 
   function StoryBox() {
     _classCallCheck(this, StoryBox);
@@ -149,7 +218,7 @@ var StoryBox = function (_React$Component3) {
   }
 
   _createClass(StoryBox, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       return React.createElement(CommentBox, null);
     }
