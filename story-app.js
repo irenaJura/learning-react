@@ -129,7 +129,6 @@ var CommentBox = function (_React$Component2) {
   }, {
     key: "_getComments",
     value: function _getComments() {
-
       return this.state.comments.map(function (comment) {
         return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
       });
@@ -155,12 +154,12 @@ var CommentBox = function (_React$Component2) {
   }, {
     key: "_addComment",
     value: function _addComment(author, body) {
-      var comment = {
+      var newComment = {
         id: this.state.comments.length + 1,
         author: author,
         body: body
       };
-      this.setState({ comments: this.state.comments.concat({ comment: comment }) });
+      this.setState({ comments: this.state.comments.concat([newComment]) });
     }
   }]);
 

@@ -68,7 +68,6 @@ class CommentBox extends React.Component {
   }
 
   _getComments() {
-
       return this.state.comments.map((comment) => {
         return (
           <Comment author={comment.author} body={comment.body} key={comment.id} />
@@ -93,18 +92,15 @@ class CommentBox extends React.Component {
   }
 
   _addComment(author, body) {
-    const comment = {
+    const newComment = {
       id: this.state.comments.length + 1,
       author,
       body
     };
-    this.setState({ comments: this.state.comments.concat({comment}) });
+    this.setState({ comments: this.state.comments.concat([newComment]) });
   }
 
-
-  }
-
-  
+}
 
 
 class Comment extends React.Component {

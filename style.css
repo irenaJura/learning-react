@@ -97,8 +97,8 @@ textarea {
 .new-comment {
 	padding: 10px 20px;
 	max-width: 200px;
-	background-color: teal;
-	color: #eee;
+	background-color: #ffca00;
+	color: teal;
 	text-transform: uppercase;
 	font-weight: bold;
 	border: 1px solid teal;
