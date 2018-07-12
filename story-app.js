@@ -2,6 +2,8 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -76,7 +78,7 @@ var CommentBox = function (_React$Component2) {
 
     _this3.state = {
       showComments: false,
-      commentList: [] // empty array will get data from API server
+      comments: [] // empty array will get data from API server
     };
     return _this3;
   }
@@ -129,8 +131,10 @@ var CommentBox = function (_React$Component2) {
   }, {
     key: "_getComments",
     value: function _getComments() {
-      return this.state.commentList.map(function (comment) {
-        return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
+      var _this4 = this;
+
+      return this.state.comments.map(function (comment) {
+        return React.createElement(Comment, { key: comment.id, comment: comment, onDelete: _this4._deleteComment.bind(_this4) });
       });
     }
   }, {
@@ -154,23 +158,24 @@ var CommentBox = function (_React$Component2) {
   }, {
     key: "_addComment",
     value: function _addComment(author, body) {
-      var newComment = {
-        id: this.state.commentList.length + 1,
-        author: author,
-        body: body
-      };
-      this.setState({ commentList: this.state.commentList.concat([newComment]) });
+      var _this5 = this;
+
+      var comment = { author: author, body: body };
+
+      jQuery.post('/api/comments', { comment: comment }).always(function (newComment) {
+        _this5.setState({ comments: _this5.state.comments.concat([newComment]) });
+      });
     }
   }, {
     key: "_fetchComments",
     value: function _fetchComments() {
-      var _this4 = this;
+      var _this6 = this;
 
       jQuery.ajax({
         method: 'GET',
-        url: '/api/commentList', // makes call to remote server
-        success: function success(commentList) {
-          _this4.setState({ commentList: commentList });
+        url: '/api/comments', // makes call to remote server
+        success: function success(comments) {
+          _this6.setState({ comments: comments });
         }
       });
     }
@@ -183,11 +188,11 @@ var CommentBox = function (_React$Component2) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this5 = this;
+      var _this7 = this;
 
       // after the component is rendered call fetchComments every 5 sec
       this._timer = setInterval(function () {
-        return _this5._fetchComments();
+        return _this7._fetchComments();
       }, 5000); // store timer as object property
     }
   }, {
@@ -195,6 +200,20 @@ var CommentBox = function (_React$Component2) {
     value: function componentWillUnmount() {
       // run when component is about to be removed from the DOM
       clearInterval(this._timer);
+    }
+  }, {
+    key: "_deleteComment",
+    value: function _deleteComment(comment) {
+      jQuery.ajax({
+        method: 'DELETE',
+        url: "/api/comments/" + comment.id
+      });
+
+      var comments = [].concat(_toConsumableArray(this.state.comments));
+      var commentIndex = comments.indexOf(comment);
+      comments.splice(commentIndex, 1);
+
+      this.setState({ comments: comments });
     }
   }]);
 
@@ -231,11 +250,19 @@ var Comment = function (_React$Component3) {
           { className: "comment-footer" },
           React.createElement(
             "a",
-            { href: "#", className: "comment-footer-delete" },
+            { href: "#", className: "comment-footer-delete", onClick: this._handleDelete.bind(this) },
             "Delete comment"
           )
         )
       );
+    }
+  }, {
+    key: "_handleDelete",
+    value: function _handleDelete(event) {
+      event.preventDefault();
+      if (confirm('Are you sure?')) {
+        this.props.onDelete(this.props.comment);
+      }
     }
   }]);
 

@@ -34,7 +34,7 @@ class CommentBox extends React.Component {
     super();
     this.state = {
       showComments: false,
-      commentList: [] // empty array will get data from API server
+      comments: [] // empty array will get data from API server
     };
   }
 
@@ -65,9 +65,9 @@ class CommentBox extends React.Component {
   }
 
   _getComments() {
-      return this.state.commentList.map((comment) => {
+      return this.state.comments.map((comment) => {
         return (
-          <Comment author={comment.author} body={comment.body} key={comment.id} />
+          <Comment key={comment.id} comment={comment} onDelete={this._deleteComment.bind(this)} />
           );
       });
   }
@@ -89,20 +89,21 @@ class CommentBox extends React.Component {
   }
 
   _addComment(author, body) {
-    const newComment = {
-      id: this.state.commentList.length + 1,
-      author,
-      body
-    };
-    this.setState({ commentList: this.state.commentList.concat([newComment]) });
+    const comment = { author, body };
+
+    jQuery.post('/api/comments', { comment })
+    .always(newComment => {
+      this.setState({ comments: this.state.comments.concat([newComment]) });
+    });
+    
   }
 
   _fetchComments() {
     jQuery.ajax({
       method: 'GET',
-      url: '/api/commentList', // makes call to remote server
-      success: (commentList) => {
-        this.setState({ commentList })
+      url: '/api/comments', // makes call to remote server
+      success: (comments) => {
+        this.setState({ comments })
       }
     });
   }
@@ -119,6 +120,20 @@ class CommentBox extends React.Component {
     clearInterval(this._timer);
   }
 
+  _deleteComment(comment) {
+    jQuery.ajax({
+      method: 'DELETE',
+      url: `/api/comments/${comment.id}`
+    });
+
+    const comments = [...this.state.comments];
+    const commentIndex = comments.indexOf(comment);
+    comments.splice(commentIndex, 1);
+
+    this.setState({ comments });
+  }
+
+
 }
 
 
@@ -129,13 +144,21 @@ class Comment extends React.Component {
         <p className="comment-header">{this.props.author}</p>
         <p className="comment-body">{this.props.body}</p>
         <div className="comment-footer">
-          <a href="#" className="comment-footer-delete">
+          <a href="#" className="comment-footer-delete" onClick={this._handleDelete.bind(this)}>
             Delete comment
           </a>
         </div>
       </div>
     );
   }
+
+  _handleDelete(event) {
+    event.preventDefault();
+    if(confirm('Are you sure?')) {
+      this.props.onDelete(this.props.comment);
+    }
+  }
+
 }
 
 class StoryBox extends React.Component {
