@@ -76,7 +76,7 @@ var CommentBox = function (_React$Component2) {
 
     _this3.state = {
       showComments: false,
-      comments: [{ id: 1, author: 'Morgan McCircuit', body: 'Great picture!' }, { id: 2, author: 'Bending Bender', body: 'Excellent stuff' }]
+      commentList: [] // empty array will get data from API server
     };
     return _this3;
   }
@@ -129,7 +129,7 @@ var CommentBox = function (_React$Component2) {
   }, {
     key: "_getComments",
     value: function _getComments() {
-      return this.state.comments.map(function (comment) {
+      return this.state.commentList.map(function (comment) {
         return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
       });
     }
@@ -155,11 +155,46 @@ var CommentBox = function (_React$Component2) {
     key: "_addComment",
     value: function _addComment(author, body) {
       var newComment = {
-        id: this.state.comments.length + 1,
+        id: this.state.commentList.length + 1,
         author: author,
         body: body
       };
-      this.setState({ comments: this.state.comments.concat([newComment]) });
+      this.setState({ commentList: this.state.commentList.concat([newComment]) });
+    }
+  }, {
+    key: "_fetchComments",
+    value: function _fetchComments() {
+      var _this4 = this;
+
+      jQuery.ajax({
+        method: 'GET',
+        url: '/api/commentList', // makes call to remote server
+        success: function success(commentList) {
+          _this4.setState({ commentList: commentList });
+        }
+      });
+    }
+  }, {
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      // fetch comments before component is rendered
+      this._fetchComments();
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this5 = this;
+
+      // after the component is rendered call fetchComments every 5 sec
+      this._timer = setInterval(function () {
+        return _this5._fetchComments();
+      }, 5000); // store timer as object property
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      // run when component is about to be removed from the DOM
+      clearInterval(this._timer);
     }
   }]);
 

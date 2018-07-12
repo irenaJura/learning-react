@@ -34,10 +34,7 @@ class CommentBox extends React.Component {
     super();
     this.state = {
       showComments: false,
-      comments: [
-        { id: 1, author: 'Morgan McCircuit', body: 'Great picture!' },
-        { id: 2, author: 'Bending Bender', body:'Excellent stuff' }
-      ]
+      commentList: [] // empty array will get data from API server
     };
   }
 
@@ -68,12 +65,12 @@ class CommentBox extends React.Component {
   }
 
   _getComments() {
-      return this.state.comments.map((comment) => {
+      return this.state.commentList.map((comment) => {
         return (
           <Comment author={comment.author} body={comment.body} key={comment.id} />
           );
       });
-      }
+  }
 
   _getCommentsTitle(commentCount) {
     if(commentCount === 0) {
@@ -93,11 +90,33 @@ class CommentBox extends React.Component {
 
   _addComment(author, body) {
     const newComment = {
-      id: this.state.comments.length + 1,
+      id: this.state.commentList.length + 1,
       author,
       body
     };
-    this.setState({ comments: this.state.comments.concat([newComment]) });
+    this.setState({ commentList: this.state.commentList.concat([newComment]) });
+  }
+
+  _fetchComments() {
+    jQuery.ajax({
+      method: 'GET',
+      url: '/api/commentList', // makes call to remote server
+      success: (commentList) => {
+        this.setState({ commentList })
+      }
+    });
+  }
+
+  componentWillMount() { // fetch comments before component is rendered
+    this._fetchComments();
+  }
+
+  componentDidMount() { // after the component is rendered call fetchComments every 5 sec
+   this._timer = setInterval(() => this._fetchComments(), 5000); // store timer as object property
+  }
+
+  componentWillUnmount() { // run when component is about to be removed from the DOM
+    clearInterval(this._timer);
   }
 
 }
